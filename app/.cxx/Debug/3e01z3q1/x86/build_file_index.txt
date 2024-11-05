@@ -1,1 +1,1 @@
-/Users/yeetivity/AndroidStudioProjects/NBack_CImpl/app/src/main/cpp/CMakeLists.txt
+C:\Users\46735\AndroidStudioProjects\labB1\app\src\main\cpp\CMakeLists.txt

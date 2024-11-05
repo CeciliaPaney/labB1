@@ -18,11 +18,16 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -33,6 +38,10 @@ import kotlinx.coroutines.launch
 import mobappdev.example.nback_cimpl.R
 import mobappdev.example.nback_cimpl.ui.viewmodels.FakeVM
 import mobappdev.example.nback_cimpl.ui.viewmodels.GameViewModel
+import mobappdev.example.nback_cimpl.ui.viewmodels.GameType
+import mobappdev.example.nback_cimpl.ui.viewmodels.GameVM
+
+
 
 /**
  * This is the Home screen composable
@@ -49,12 +58,26 @@ import mobappdev.example.nback_cimpl.ui.viewmodels.GameViewModel
 
 @Composable
 fun HomeScreen(
-    vm: GameViewModel
+    vm: GameViewModel,
+    onStartGame: (GameType) -> Unit // New parameter to handle navigation to GameScreen
 ) {
-    val highscore by vm.highscore.collectAsState()  // Highscore is its own StateFlow
+
+    val gameVM = vm as? GameVM
+    LaunchedEffect(Unit) {
+        if (vm is GameVM) {
+            vm.endGame() // Call endGame to stop any playing audio
+        }
+    }
+    val highscore by vm.highscore.collectAsState()
     val gameState by vm.gameState.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
+    // State variables for game settings
+    var nBackValue by remember { mutableStateOf(2) }
+    var timeBetweenEvents by remember { mutableStateOf(1000) }
+    var numberOfEvents by remember { mutableStateOf(20) }
+    var selectedMode by remember { mutableStateOf("Visual") }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) }
@@ -71,32 +94,46 @@ fun HomeScreen(
                 text = "High-Score = $highscore",
                 style = MaterialTheme.typography.headlineLarge
             )
-            // Todo: You'll probably want to change this "BOX" part of the composable
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (gameState.eventValue != -1) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "Current eventValue is: ${gameState.eventValue}",
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                    Button(onClick = vm::startGame) {
-                        Text(text = "Generate eventValues")
-                    }
-                }
-            }
+
+            // Display current settings and sliders to configure game
             Text(
-                modifier = Modifier.padding(16.dp),
-                text = "Start Game".uppercase(),
-                style = MaterialTheme.typography.displaySmall
+                text = "Settings",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 16.dp)
             )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            ) {
+                // N-Back Value Selector
+                Text(text = "N-Back Value: $nBackValue")
+                Slider(
+                    value = nBackValue.toFloat(),
+                    onValueChange = { nBackValue = it.toInt() },
+                    valueRange = 1f..5f,
+                    steps = 4
+                )
+
+                // Time Between Events Selector
+                Text(text = "Time Between Events (ms): $timeBetweenEvents")
+                Slider(
+                    value = timeBetweenEvents.toFloat(),
+                    onValueChange = { timeBetweenEvents = it.toInt() },
+                    valueRange = 1000f..4000f,
+                    steps = 5
+                )
+
+                // Number of Events Selector
+                Text(text = "Number of Events: $numberOfEvents")
+                Slider(
+                    value = numberOfEvents.toFloat(),
+                    onValueChange = { numberOfEvents = it.toInt() },
+                    valueRange = 10f..30f,
+                    steps = 20
+                )
+            }
+
+            // Buttons to select mode and start game
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -105,10 +142,11 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = {
-                    // Todo: change this button behaviour
+                    selectedMode = "Audio"
+                    vm.setGameSettings(nBackValue, timeBetweenEvents, numberOfEvents, selectedMode)
                     scope.launch {
                         snackBarHostState.showSnackbar(
-                            message = "Hey! you clicked the audio button"
+                            message = "Audio mode selected"
                         )
                     }
                 }) {
@@ -120,16 +158,16 @@ fun HomeScreen(
                             .aspectRatio(3f / 2f)
                     )
                 }
-                Button(
-                    onClick = {
-                        // Todo: change this button behaviour
-                        scope.launch {
-                            snackBarHostState.showSnackbar(
-                                message = "Hey! you clicked the visual button",
-                                duration = SnackbarDuration.Short
-                            )
-                        }
-                    }) {
+
+                Button(onClick = {
+                    selectedMode = "Visual"
+                    vm.setGameSettings(nBackValue, timeBetweenEvents, numberOfEvents, selectedMode)
+                    scope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = "Visual mode selected"
+                        )
+                    }
+                }) {
                     Icon(
                         painter = painterResource(id = R.drawable.visual),
                         contentDescription = "Visual",
@@ -139,6 +177,18 @@ fun HomeScreen(
                     )
                 }
             }
+
+            // Start the game with the current settings
+            Button(
+                onClick = {
+                    vm.setGameSettings(nBackValue, timeBetweenEvents, numberOfEvents, selectedMode)
+                    vm.startGame()  // Start the game
+                    onStartGame(GameType.valueOf(selectedMode))   // Navigate to GameScreen
+                },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = "Start Game")
+            }
         }
     }
 }
@@ -146,8 +196,10 @@ fun HomeScreen(
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    // Since I am injecting a VM into my homescreen that depends on Application context, the preview doesn't work.
-    Surface(){
-        HomeScreen(FakeVM())
+    Surface {
+        HomeScreen(
+            vm = FakeVM(),
+            onStartGame = {} // Provide an empty lambda for preview
+        )
     }
 }

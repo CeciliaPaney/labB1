@@ -1,5 +1,7 @@
 package mobappdev.example.nback_cimpl
 
+import android.util.Log
+
 /**
  * This class provides the connection to the C-model
  *
@@ -15,17 +17,29 @@ package mobappdev.example.nback_cimpl
 
 
 class NBackHelper {
-
-    // Native function declaration (calls the C function)
+    // Native function declaration
     private external fun createNBackString(size: Int, combinations: Int, percentMatch: Int, nBack: Int): IntArray
 
     fun generateNBackString(size: Int, combinations: Int, percentMatch: Int, nBack: Int): IntArray {
-        return createNBackString(size, combinations, percentMatch, nBack)
+        Log.d("NBackHelper", "generateNBackString called with size=$size, combinations=$combinations, percentMatch=$percentMatch, nBack=$nBack")
+        return try {
+            val result = createNBackString(size, combinations, percentMatch, nBack)
+            Log.d("NBackHelper", "Generated sequence: ${result.contentToString()}")
+            result
+        } catch (e: Exception) {
+            Log.e("NBackHelper", "Error in generateNBackString: ${e.message}", e)
+            IntArray(0) // Return an empty array if there’s an error
+        }
     }
 
     companion object {
         init {
-            System.loadLibrary("JniBridge") // Load the native C library
+            try {
+                System.loadLibrary("JniBridge") // Load the native C library
+                Log.d("NBackHelper", "JniBridge library loaded successfully")
+            } catch (e: UnsatisfiedLinkError) {
+                Log.e("NBackHelper", "Failed to load JniBridge library: ${e.message}")
+            }
         }
     }
 }

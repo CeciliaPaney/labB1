@@ -6,6 +6,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import mobappdev.example.nback_cimpl.data.UserPreferencesRepository
+import androidx.room.Room
+import mobappdev.example.nback_cimpl.data.AppDatabase
 
 /**
  * This is the Main Application
@@ -30,11 +32,18 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
 /*
 * Custom app entry point for manual dependency injection
  */
-class GameApplication: Application() {
-    lateinit var userPreferencesRespository: UserPreferencesRepository
+class GameApplication : Application() {
+    lateinit var userPreferencesRepository: UserPreferencesRepository
+    lateinit var database: AppDatabase
 
     override fun onCreate() {
         super.onCreate()
-        userPreferencesRespository = UserPreferencesRepository(dataStore)
+        userPreferencesRepository = UserPreferencesRepository(dataStore)
+
+        database = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "game_database"
+        ).build()
     }
 }

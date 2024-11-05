@@ -17,6 +17,8 @@ void fillInAMatch(int nBackString[], int size, int combinations, int nback);
 // Function to fill in all empty elements into nBackString
 void fillInAllEmpty(int nBackString[], int size, int combinations, int nback);
 
+void createNBackString(int nBackString[], int size, int combinations, int matchPercentage, int nback);
+
 /**
  * Function to create N-back string
  * @param nBackString   Array to write the string to
@@ -25,10 +27,7 @@ void fillInAllEmpty(int nBackString[], int size, int combinations, int nback);
  * @param matchPercentage  percentage of matches we want to have
  * @param nback         number of how many positions we want between the matching positions (e.g. 3; 1-2-3-1 is a match)
  */
-void createNBackString(int nBackString[], int size, int combinations, int matchPercentage, int nback);
-
-Nback create(int size, int combinations, int matchPercentage, int nback){
-    // Generate the array to save positions to
+Nback create(int size, int combinations, int matchPercentage, int nback) {
     Nback s = malloc(sizeof(struct nback_type));
     s->size = size;
     createNBackString(s->content, size, combinations, matchPercentage, nback);
