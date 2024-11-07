@@ -97,7 +97,7 @@ fun VisualGameGrid(eventValue: Int) {
                                     .weight(1f)
                                     .padding(4.dp)
                                     .background(
-                                        color = if (cellIndex == eventValue) Color.Red else Color.Gray // Use distinct colors
+                                        color = if (cellIndex == eventValue) Color.Red else Color.Gray
                                     ),
                                 contentAlignment = Alignment.Center
                             ) {
@@ -135,7 +135,7 @@ fun AudioGameScreen(eventValue: Int, currentEventNumber: Int, isError: Boolean, 
         // Button for user to mark an N-back match
         Button(
             onClick = onMarkMatch,
-            colors = ButtonDefaults.buttonColors(containerColor = buttonColor),  // Use animated color
+            colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
             modifier = Modifier.padding(top = 24.dp)
         ) {
             Text("Mark N-back Match")

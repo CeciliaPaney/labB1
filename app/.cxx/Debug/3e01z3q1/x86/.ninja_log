@@ -1,0 +1,9 @@
+# ninja log v5
+1	534	7524143429542689	CMakeFiles/nback_cimpl.dir/nback.c.o	7d5e72731b69d85d
+10	560	7524143429569474	CMakeFiles/JniBridge.dir/JniBridge.c.o	6126cb235f6fb4b3
+537	739	7524143431677393	C:/Users/46735/AndroidStudioProjects/labB1/app/build/intermediates/cxx/Debug/3e01z3q1/obj/x86/libnback_cimpl.so	2b0789df4ec0b533
+740	905	7524143433330834	C:/Users/46735/AndroidStudioProjects/labB1/app/build/intermediates/cxx/Debug/3e01z3q1/obj/x86/libJniBridge.so	ff0b4c14dad6abb0
+10	115	7524399154049754	CMakeFiles/JniBridge.dir/JniBridge.c.o	6126cb235f6fb4b3
+3	122	7524399154064803	CMakeFiles/nback_cimpl.dir/nback.c.o	7d5e72731b69d85d
+123	391	7524399156831057	C:/Users/46735/AndroidStudioProjects/labB1/app/build/intermediates/cxx/Debug/3e01z3q1/obj/x86/libnback_cimpl.so	2b0789df4ec0b533
+392	560	7524399158515765	C:/Users/46735/AndroidStudioProjects/labB1/app/build/intermediates/cxx/Debug/3e01z3q1/obj/x86/libJniBridge.so	ff0b4c14dad6abb0

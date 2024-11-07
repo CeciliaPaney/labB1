@@ -59,7 +59,7 @@ import mobappdev.example.nback_cimpl.ui.viewmodels.GameVM
 @Composable
 fun HomeScreen(
     vm: GameViewModel,
-    onStartGame: (GameType) -> Unit // New parameter to handle navigation to GameScreen
+    onStartGame: (GameType) -> Unit // Parameter to handle navigation to GameScreen
 ) {
 
     val gameVM = vm as? GameVM

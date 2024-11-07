@@ -169,13 +169,12 @@ class GameVM(
                     GameType.Visual -> runVisualGame()
                 }
             }
-            // Todo: Update the highscore at the end of the game if needed
         }
     }
 
     override fun checkMatch() {
         /**
-         * Todo: This function should check if there is a match when the user presses a match button
+         * This function should check if there is a match when the user presses a match button
          * Make sure the user can only register a match once for each event.
          */
         val currentIndex = _gameState.value.currentIndex
@@ -273,7 +272,7 @@ class GameVM(
             // Update the game state with the current event value and index
             _gameState.value = _gameState.value.copy(eventValue = value, currentIndex = index, currentEventNumber = index + 1)
 
-            // Optional: Log each step to verify the sequence
+            // Log each step to verify the sequence
             Log.d("GameVM", "Visual Game - Showing value: $value at index: $index")
 
             // Wait for the specified interval before updating to the next event
@@ -283,11 +282,10 @@ class GameVM(
             _gameState.value = _gameState.value.copy(eventValue = -1)
 
             // Add a brief delay for the "blank" state before the next event
-            delay(300) // Adjust this delay as needed for visibility, e.g., 300ms
+            delay(300)
         }
         saveGameResultAndCheckHighScore(_score.value, _gameState.value.correctResponses)
 
-        // Optionally, reset or finish the game state after the loop completes
         _gameState.value = _gameState.value.copy(eventValue = -1, currentIndex = -1, isGameFinished = true) // Reset state after game ends
     }
 
